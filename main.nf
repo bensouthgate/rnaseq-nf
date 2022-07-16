@@ -45,8 +45,8 @@ log.info """\
  """
 
 // import modules
-include { RNASEQ } from './modules/rnaseq'
-include { MULTIQC } from './modules/multiqc'
+include { RNASEQ } from './modules/rnaseq.nf'
+include { MULTIQC } from './modules/multiqc.nf'
 
 /* 
  * main script flow

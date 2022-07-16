@@ -1,8 +1,8 @@
 params.outdir = 'results'
 
-include { INDEX } from './index'
-include { QUANT } from './quant'
-include { FASTQC } from './fastqc'
+include { INDEX } from './index.nf'
+include { QUANT } from './quant.nf'
+include { FASTQC } from './fastqc.nf'
 
 workflow RNASEQ {
   take:

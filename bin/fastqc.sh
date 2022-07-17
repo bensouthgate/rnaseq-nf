@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 sample_id="$1"
 reads="$2"
 

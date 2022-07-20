@@ -3,8 +3,30 @@ params.outdir = 'results'
 process MULTIQC {
     publishDir params.outdir, mode:'copy'
 
+    /* 
+    * This puts each of the inputs into their own folder
+    * Not necessary but prevents same file name conflicts
+    * See multiQC Website for details on how to specify multiqc process
+    * https://multiqc.info/docs/#using-multiqc-in-pipelines
+    */
+
     input:
-    path('*') 
+    /* 
+    * path ('fastqc/*')
+    * path ('trimgalore/fastqc/*')
+    * path ('trimgalore/*')
+    * path ('sortmerna/*')
+    * path ('star/*')
+    */
+    path ('hisat2/*')
+
+    /*
+    * path ('rsem/*')
+    * path ('salmon/*')
+    * path ('samtools/stats/*')
+    * path ('samtools/flagstat/*')
+    * path ('samtools/idxstats/*') 
+    */
     path(config) 
 
     output:
@@ -14,6 +36,6 @@ process MULTIQC {
     """
     cp $config/* .
     echo "custom_logo: \$PWD/logo.png" >> multiqc_config.yaml
-    multiqc .
+    multiqc -f .
     """
 }

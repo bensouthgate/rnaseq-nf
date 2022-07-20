@@ -35,10 +35,12 @@ params.reads = "$baseDir/data/ggal/ggal_gut_{1,2}.fq"
 params.transcriptome = "$baseDir/data/ggal/ggal_1_48850000_49020000.Ggal71.500bpflank.fa"
 params.outdir = "results"
 params.multiqc = "$baseDir/multiqc"
+params.fasta = "$baseDir/data/ggal/ggal.fa"
 
 log.info """\
  R N A S E Q - N F   P I P E L I N E
  ===================================
+ fasta        : ${params.fasta}
  transcriptome: ${params.transcriptome}
  reads        : ${params.reads}
  outdir       : ${params.outdir}
@@ -53,8 +55,18 @@ include { MULTIQC } from './modules/multiqc.nf'
  */
 workflow {
   read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
-  RNASEQ( params.transcriptome, read_pairs_ch )
-  MULTIQC( RNASEQ.out, params.multiqc )
+  RNASEQ( params.fasta, read_pairs_ch )
+
+    /* 
+    * Here we collect (so collapse into single entity), and then take the file names from the tuple
+    * We do this using the groovy closure {it[1]} and ifEmpty returns empty list if not present
+    */
+
+  MULTIQC ( 
+
+    RNASEQ.out.alnstats.collect{it[1]}.ifEmpty([]), 
+    params.multiqc 
+  )
 }
 
 /* 

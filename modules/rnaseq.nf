@@ -1,13 +1,15 @@
 params.outdir = 'results'
 
-include { HISAT2 } from './index.nf'
+include { HISAT2_BUILD } from './hisat.nf'
+include { HISAT2_ASSEMBLE } from './hisat.nf'
+
 include { INDEX } from './index.nf'
 include { QUANT } from './quant.nf'
 include { FASTQC } from './fastqc.nf'
 
 workflow RNASEQ {
   take:
-    transcriptome
+    fasta
     read_pairs_ch
  
   main: 
@@ -17,8 +19,11 @@ workflow RNASEQ {
    * QUANT(INDEX.out, read_pairs_ch)
    */
 
-    HISAT2(genomeidx, read_pairs_ch)
+    HISAT2_BUILD(fasta)
+    HISAT2_ASSEMBLE(genomeidx, read_pairs_ch)
     
   emit: 
-     QUANT.out | concat(FASTQC.out) | collect
+    genomeidx = HISAT2_BUILD.out.genomeidx      // channel: [ path(genomeidx) ]
+    sam = HISAT2_ASSEMBLE.out.sam               // channel: [ val(pair_id), [ sam ] ]
+    alnstats = HISAT2_ASSEMBLE.out.alnstats     // channel: [ val(pair_id), [ alnstats ] ]
 }

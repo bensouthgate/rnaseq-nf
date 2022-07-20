@@ -12,7 +12,7 @@ process SAMTOOLS {
 
     script:
     """
-     samtools view -S -b ${sam} | \
+     samtools view -S -b $sam | \
      samtools sort -@ $task.cpus -o ${pair_id}.bam  
      samtools index ${pair_id}.bam 
     """

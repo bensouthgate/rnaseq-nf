@@ -1,7 +1,7 @@
 params.outdir = 'results'
 
-process HISAT {
-    tag "HISAT on $pair_id"
+process HISAT2 {
+    tag "HISAT2 on $pair_id"
     publishDir params.outdir, mode:'copy'
 
     input:
@@ -19,5 +19,25 @@ process HISAT {
      -1 ${reads[1]} \
      -2 ${reads[2]} \
      -S ${pair_id}.sam 2> ${pair_id}.alnstats
+    """
+}
+
+
+process HISAT2_BUILD {
+    tag "HISAT2_BUILD on $fasta"
+    publishDir params.outdir, mode:'copy'
+
+    input:
+    path fasta
+
+    output:
+    path "genomeidx", emit: genomeidx
+
+    script:
+
+    """
+    mkdir hisat2
+
+    hisat2-build -p $task.cpus ${fasta} hisat2/genomeidx
     """
 }

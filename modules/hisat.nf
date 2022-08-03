@@ -24,6 +24,7 @@ process HISAT2_ASSEMBLE {
     publishDir params.outdir, mode:'copy'
 
     input:
+    path fasta
     path genomeidx
     tuple val(pair_id), path(reads)
 
@@ -34,9 +35,9 @@ process HISAT2_ASSEMBLE {
     script:
 
     """
-    hisat2 -p $task.cpus --dta -x $genomeidx \
-     -1 ${reads[1]} \
-     -2 ${reads[2]} \
+    hisat2 -p $task.cpus --dta -x ${genomeidx}/${fasta.baseName} \
+     -1 ${reads[0]} \
+     -2 ${reads[1]} \
      -S ${pair_id}.sam 2> ${pair_id}.alnstats
     """
 }

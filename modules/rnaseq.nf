@@ -20,7 +20,7 @@ workflow RNASEQ {
    */
 
     HISAT2_BUILD(fasta)
-    HISAT2_ASSEMBLE(genomeidx, read_pairs_ch)
+    HISAT2_ASSEMBLE(fasta, HISAT2_BUILD.out.genomeidx, read_pairs_ch)
     
   emit: 
     genomeidx = HISAT2_BUILD.out.genomeidx      // channel: [ path(genomeidx) ]

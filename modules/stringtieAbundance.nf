@@ -21,6 +21,6 @@ process STRINGTIE {
     ## and the gtf should be: ggal
     dsample="${pair_id%%_*}"
     stringtie -e -B -p $task.cpus -G stringtie_merged.gtf \
-    -o ${dsample}.gtf ${pair_id}.bam
+    -o \${dsample}.gtf ${pair_id}.bam
     """
 }

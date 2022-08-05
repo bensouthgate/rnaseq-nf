@@ -47,6 +47,7 @@ log.info """\
  """
 
 // import modules
+include { QC } from './modules/qc.nf'
 include { RNASEQ } from './modules/rnaseq.nf'
 include { MULTIQC } from './modules/multiqc.nf'
 
@@ -55,6 +56,7 @@ include { MULTIQC } from './modules/multiqc.nf'
  */
 workflow {
   read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
+  QC( read_pairs_ch )
   RNASEQ( params.fasta, read_pairs_ch )
 
     /* 
@@ -63,8 +65,8 @@ workflow {
     */
 
   MULTIQC ( 
-
-    RNASEQ.out.alnstats.collect{it[1]}.ifEmpty([]), 
+    QC.out.fastqc_out_path.ifEmpty([]),
+    RNASEQ.out.alnstats.collect{it[1]}.ifEmpty([]),
     params.multiqc 
   )
 }

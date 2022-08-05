@@ -18,6 +18,7 @@ process MULTIQC {
     * path ('sortmerna/*')
     * path ('star/*')
     */
+    path ('fastqc/*/*')
     path ('hisat2/*')
 
     /*

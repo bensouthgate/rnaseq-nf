@@ -20,13 +20,12 @@ process MULTIQC {
     */
     path ('fastqc/*/*')
     path ('hisat2/*')
-
+    path ('samtools/stats/*')
+    path ('samtools/flagstat/*')
+    path ('samtools/idxstats/*') 
     /*
     * path ('rsem/*')
     * path ('salmon/*')
-    * path ('samtools/stats/*')
-    * path ('samtools/flagstat/*')
-    * path ('samtools/idxstats/*') 
     */
     path(config) 
 

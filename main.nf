@@ -36,6 +36,7 @@ params.transcriptome = "$baseDir/data/ggal/ggal_1_48850000_49020000.Ggal71.500bp
 params.outdir = "results"
 params.multiqc = "$baseDir/multiqc"
 params.fasta = "$baseDir/data/ggal/ggal.fa"
+params.gtf_file = "$baseDir/data/ggal/ggal_1_48850000_49020000.bed.gff"
 
 log.info """\
  R N A S E Q - N F   P I P E L I N E
@@ -57,17 +58,23 @@ include { MULTIQC } from './modules/multiqc.nf'
 workflow {
   read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
   QC( read_pairs_ch )
-  RNASEQ( params.fasta, read_pairs_ch )
+  RNASEQ( params.fasta, read_pairs_ch, params.gtf_file )
 
-    /* 
-    * Here we collect (so collapse into single entity), and then take the file names from the tuple
-    * We do this using the groovy closure {it[1]} and ifEmpty returns empty list if not present
-    */
+  /* 
+  * Here we collect (so collapse into single entity), and then take the file names from the tuple
+  * We do this using the groovy closure {it[1]} and ifEmpty returns empty list if not present
+  */
 
   MULTIQC ( 
-    QC.out.fastqc_out_path.ifEmpty([]),
-    RNASEQ.out.alnstats.collect{it[1]}.ifEmpty([]),
-    params.multiqc 
+    QC.out.fastqc_out_path.ifEmpty([]),             // channel: [ path(qc_logs) ]
+
+    RNASEQ.out.alnstats.collect{it[1]}.ifEmpty([]), // channel: [ val(pair_id), [ alnstats ] ]
+
+    RNASEQ.out.stats.collect{it[1]}.ifEmpty([]),    // channel: [ val(pair_id), [ stats ] ]
+    RNASEQ.out.flagstat.collect{it[1]}.ifEmpty([]), // channel: [ val(pair_id), [ flagstat ] ]
+    RNASEQ.out.idxstats.collect{it[1]}.ifEmpty([]), // channel: [ val(pair_id), [ idxstats ] ]
+
+    params.multiqc
   )
 }
 

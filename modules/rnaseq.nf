@@ -69,4 +69,7 @@ workflow RNASEQ {
     merged_gtf = STRINGTIE_MERGE.out.merged_gtf // channel: [ path(merged_gtf) ]
 
     ballgown = STRINGTIE_ABUN.out.ballgown      // channel: [ val(pair_id), [ ballgown ] ]
+
+    transcripts_results = BALLGOWN.out.transcripts_results // channel: [ path(transcripts_results) ]
+    genes_results = BALLGOWN.out.genes_results  // channel: [ path(genes_results) ]
 }

@@ -1,19 +1,22 @@
 params.outdir = 'results'
 
 process BALLGOWN {
-    tag "BALLGOWN on $pheno_data"
+    tag "BALLGOWN on $ballgown_folders"
     publishDir params.outdir, mode:'copy'
+    debug true
 
     input:
     path phenodata
     path ballgown_folders
 
     output:
-    path "ballgown_transcripts_results.csv" 
-    path "ballgown_genes_results.csv" 
+    path "ballgown_transcripts_results.csv", emit: transcripts_results
+    path "ballgown_genes_results.csv", emit: genes_results
 
     script:
+    
     """
-    RScript rnaseq_ballgown.R $phenodata $ballgown_folders
+    head $phenodata | echo
+    Rscript ${baseDir}/bin/rnaseq_ballgown.R $phenodata $ballgown_folders
     """
 }

@@ -8,7 +8,10 @@ pheno_data_file <- args[1]
 
 # take sample names which hold ballgown data tables
 # (name of folder)
-samples <- args[2]
+samples <- args[2:length(args)]
+
+print(samples)
+print(head(read.csv(pheno_data_file)))
 
 library(ballgown)
 library(RSkittleBrewer)
@@ -27,12 +30,13 @@ bg_chrX <- ballgown(dataDir = "ballgown", samples = samples, pData = pheno_data)
 bg_chrX_filt <- subset(bg_chrX, "rowVars(texpr(bg_chrX)) > 1", genomesubset=TRUE)
 
 ## DE by transcript
-results_transcripts <-  stattest(bg_chrX_filt, feature='transcript', covariate='sex', 
-         adjustvars=c('population'), getFC=TRUE, meas='FPKM')
+# results_transcripts <-  stattest(bg_chrX_filt, feature='transcript', covariate='tissue', 
+#          adjustvars=c('population'), getFC=TRUE, meas='FPKM')
+
+results_transcripts <-  stattest(bg_chrX_filt, feature='transcript', covariate='tissue', getFC=TRUE, meas='FPKM')
 
 ## DE by gene
-results_genes <-  stattest(bg_chrX_filt, feature='gene', covariate='sex', 
-         adjustvars=c('population'), getFC=TRUE, meas='FPKM')
+results_genes <-  stattest(bg_chrX_filt, feature='gene', covariate='tissue', getFC=TRUE, meas='FPKM')
 
 ## Add gene name
 results_transcripts <- data.frame(geneNames=ballgown::geneNames(bg_chrX_filt),

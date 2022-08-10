@@ -37,6 +37,7 @@ params.outdir = "results"
 params.multiqc = "$baseDir/multiqc"
 params.fasta = "$baseDir/data/ggal/ggal.fa"
 params.gtf_file = "$baseDir/data/ggal/ggal_1_48850000_49020000.bed.gff"
+params.phenodata = "$baseDir/data/ggal/phenoData.csv"
 
 log.info """\
  R N A S E Q - N F   P I P E L I N E
@@ -58,7 +59,7 @@ include { MULTIQC } from './modules/multiqc.nf'
 workflow {
   read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
   QC( read_pairs_ch )
-  RNASEQ( params.fasta, read_pairs_ch, params.gtf_file )
+  RNASEQ( params.fasta, read_pairs_ch, params.gtf_file, params.phenodata )
 
   /* 
   * Here we collect (so collapse into single entity), and then take the file names from the tuple

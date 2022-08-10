@@ -5,14 +5,15 @@ process BALLGOWN {
     publishDir params.outdir, mode:'copy'
 
     input:
-    path pheno_data
+    path phenodata
+    path ballgown_folders
 
     output:
-    path "chrX_transcripts_results.csv" 
-    path "chrX_genes_results.csv" 
+    path "ballgown_transcripts_results.csv" 
+    path "ballgown_genes_results.csv" 
 
     script:
     """
-    RScript rnaseq_ballgown.R "$pheno_data"
+    RScript rnaseq_ballgown.R $phenodata $ballgown_folders
     """
 }

@@ -2,12 +2,13 @@
 # run this in the output directory for rnaseq_pipeline.sh
 # passing the pheno data csv file as the only argument 
 args = commandArgs(trailingOnly=TRUE)
-if (length(args)==0) {
-# assume no output directory argument was given to rnaseq_pipeline.sh
-  pheno_data_file <- paste0(getwd(), "/chrX_data/geuvadis_phenodata.csv")
-} else {
-  pheno_data_file <- args[1]
-}
+
+# pheno data
+pheno_data_file <- args[1]
+
+# take sample names which hold ballgown data tables
+# (name of folder)
+samples <- args[2]
 
 library(ballgown)
 library(RSkittleBrewer)
@@ -19,7 +20,8 @@ library(devtools)
 pheno_data <- read.csv(pheno_data_file)
 
 ## Read in expression data
-bg_chrX <- ballgown(dataDir = "ballgown", samplePattern="ERR", pData=pheno_data)
+# bg_chrX <- ballgown(dataDir = "ballgown", samplePattern="ERR", pData=pheno_data)
+bg_chrX <- ballgown(dataDir = "ballgown", samples = samples, pData = pheno_data)
 
 ## Filter low abundance genes
 bg_chrX_filt <- subset(bg_chrX, "rowVars(texpr(bg_chrX)) > 1", genomesubset=TRUE)
@@ -41,12 +43,13 @@ results_transcripts <- arrange(results_transcripts, pval)
 results_genes <-  arrange(results_genes, pval)
 
 ## Write results to CSV
-write.csv(results_transcripts, "chrX_transcripts_results.csv", row.names=FALSE)
-write.csv(results_genes, "chrX_genes_results.csv", row.names=FALSE)
+write.csv(results_transcripts, "ballgown_transcripts_results.csv", row.names=FALSE)
+write.csv(results_genes, "ballgown_genes_results.csv", row.names=FALSE)
 
 ## Filter for genes with q-val <0.05
-subset(results_transcripts, results_transcripts$qval <=0.05)
-subset(results_genes, results_genes$qval <=0.05)
+
+# subset(results_transcripts, results_transcripts$qval <=0.05)
+# subset(results_genes, results_genes$qval <=0.05)
 
 ## Plotting setup
 #tropical <- c('darkorange', 'dodgerblue', 'hotpink', 'limegreen', 'yellow')

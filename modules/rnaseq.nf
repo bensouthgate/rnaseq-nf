@@ -13,6 +13,9 @@ include { SAMTOOLS_IDXSTATS } from './samtools.nf'
 
 include { STRINGTIE } from './stringtie.nf'
 include { STRINGTIE_MERGE } from './stringtie.nf'
+include { STRINGTIE_ABUN } from './stringtie.nf'
+
+include { BALLGOWN } from './ballgown.nf'
 
 workflow RNASEQ {
 
@@ -21,6 +24,7 @@ workflow RNASEQ {
     fasta
     read_pairs_ch
     gtf_file
+    phenodata
 
   main: 
 
@@ -42,6 +46,9 @@ workflow RNASEQ {
 
     STRINGTIE ( gtf_file, SAMTOOLS_SORT.out.sorted_bam )
     STRINGTIE_MERGE ( gtf_file, STRINGTIE.out.gtf.collect{it[1]} )
+    STRINGTIE_ABUN ( STRINGTIE_MERGE.out.merged_gtf, SAMTOOLS_SORT.out.sorted_bam )
+
+    BALLGOWN ( phenodata, STRINGTIE_ABUN.out.ballgown.collect{it[1]} )
 
   emit: 
 
@@ -60,4 +67,6 @@ workflow RNASEQ {
 
     gtf = STRINGTIE.out.gtf                     // channel: [ val(pair_id), [ gtf ] ]
     merged_gtf = STRINGTIE_MERGE.out.merged_gtf // channel: [ path(merged_gtf) ]
+
+    ballgown = STRINGTIE_ABUN.out.ballgown      // channel: [ val(pair_id), [ ballgown ] ]
 }

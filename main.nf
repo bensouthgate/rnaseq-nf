@@ -12,15 +12,6 @@
  * defined by the Mozilla Public License, v. 2.0.
  */
 
-/*
- * Proof of concept of a RNAseq pipeline implemented with Nextflow
- *
- * Authors:
- * - Paolo Di Tommaso <paolo.ditommaso@gmail.com>
- * - Emilio Palumbo <emiliopalumbo@gmail.com>
- * - Evan Floden <evanfloden@gmail.com>
- */
-
 /* 
  * enables modules 
  */
@@ -30,14 +21,6 @@ nextflow.enable.dsl = 2
  * Default pipeline parameters. They can be overriden on the command line eg.
  * given `params.foo` specify on the run command line `--foo some_value`.
  */
-
-params.reads = "$baseDir/data/ggal/*_{1,2}.fq"
-params.transcriptome = "$baseDir/data/ggal/ggal_1_48850000_49020000.Ggal71.500bpflank.fa"
-params.outdir = "results"
-params.multiqc = "$baseDir/multiqc"
-params.fasta = "$baseDir/data/ggal/ggal.fa"
-params.gtf_file = "$baseDir/data/ggal/ggal_1_48850000_49020000.bed.gff"
-params.phenodata = "$baseDir/data/ggal/phenoData.csv"
 
 log.info """\
  R N A S E Q - N F   P I P E L I N E
